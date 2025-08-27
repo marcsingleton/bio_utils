@@ -8,5 +8,5 @@ Use the following commands to install `bio_utils` into your local environment:
 ```
 git clone
 cd bio_utils
-pip install -e
+pip install -e .
 ```
