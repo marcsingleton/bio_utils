@@ -432,3 +432,69 @@ def load_nanobody_arrow(
 
 
 cmd.extend(load_nanobody_arrow)
+
+
+def load_nanobody_as_arrow(
+    path,
+    name=None,
+    color=None,
+    selection='*',
+    arrow_kwargs=None,
+    nanobody_kwargs=None,
+):
+    """
+    Load a nanobody structure as an arrow.
+
+    Parameters
+    ----------
+    path : str
+        Path to structure.
+    name : str
+        Name of arrow object.
+    color : str or list of three floats
+        Registered color name or RGB values in range [0.0, 1.0] or [0, 255].
+    selection : str
+        Selection-expression or name-pattern corresponding to the nanobody atoms or object.
+    arrow_kwargs : dict
+        Additional arguments passed to load_nanobody_arrow call.
+    nanobody_kwargs : dict
+        Additional arguments unpacked in load_nanobody_arrow call.
+    """
+    if nanobody_kwargs is None:
+        nanobody_kwargs = {}
+    if arrow_kwargs is None:
+        arrow_kwargs = {}
+
+    # Some bookkeeping for internal clarity
+    arrow_name = name
+    del name
+
+    cmd.load(path)
+    model_name = cmd.get_object_list()[-1]
+
+    # Set name and color
+    if arrow_name is None:
+        arrow_name = model_name
+    if arrow_name == model_name:
+        tmp_name = cmd.get_unused_name()
+        cmd.set_name(model_name, tmp_name)
+        model_name = tmp_name
+    if color is None:
+        indices = []
+        cmd.iterate(
+            f'({selection}) and %{model_name} and name CA', lambda x: indices.append(x.color)
+        )
+        index = indices[0]
+        color = cmd.get_color_tuple(index)
+
+    load_nanobody_arrow(
+        arrow_name,
+        color,
+        f'({selection}) and %{model_name}',
+        arrow_kwargs=arrow_kwargs,
+        **nanobody_kwargs,
+    )
+    cmd.delete(f'%{model_name}')
+
+
+cmd.extend(load_nanobody_as_arrow)
