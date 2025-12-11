@@ -325,14 +325,36 @@ def load_nanobody_arrow(
     selection='*',
     state=-1,
     min_strand_len=5,
-    N_term_orient_len=2,
+    N_term_len=2,
     mode='strand-bounds',
     arrow_kwargs=None,
 ):
+    """
+    Create an arrow beginning at the beta sandwich and pointing along its major axis.
+
+    Parameters
+    ----------
+    name : str
+        Name of arrow object.
+    color : str or list of three floats
+        Registered color name or RGB values in range [0.0, 1.0] or [0, 255].
+    selection : str
+        Selection-expression or name-pattern corresponding to the nanobody atoms or object.
+    state : int
+        State containing secondary structure annotations.
+    min_strand_len : int
+        Minimum number of residues in a beta strand.
+    N_term_len : int
+        Number of residues at N-terminus used for identifying CDR orientation.
+    mode : 'strand-bounds' | 'pca'
+        Method for determining arrow origin and orientation.
+    arrow_kwargs : dict
+        Additional arguments unpacked in load_cgo_arrow call.
+    """
     if min_strand_len < 1:
         raise ValueError('min_strand_len must be greater than 1')
-    if N_term_orient_len < 2:
-        raise ValueError('N_term_orient_len must be greater than 2')
+    if N_term_len < 2:
+        raise ValueError('N_term_len must be greater than 2')
     accepted_modes = ['strand-bounds', 'pca']
     if mode not in accepted_modes:
         raise RuntimeError(f'Mode {mode} not recognized. Must be in {accepted_modes}.')
@@ -417,13 +439,13 @@ def load_nanobody_arrow(
         )
 
     # Check for proper orientation
-    if N_term_orient_len > len(atoms):
-        N_term_orient_len = len(atoms)
+    if N_term_len > len(atoms):
+        N_term_len = len(atoms)
         raise RuntimeWarning(
-            'N_term_orient_len is greater than selection length. Setting to selection length.'
+            'N_term_len is greater than selection length. Setting to selection length.'
         )
     N_term_coord_0 = np.array(atoms[0][1])
-    N_term_coord_1 = np.array(atoms[N_term_orient_len - 1][1])
+    N_term_coord_1 = np.array(atoms[N_term_len - 1][1])
     N_term_vec = N_term_coord_1 - N_term_coord_0
     if np.dot(N_term_vec, orient) > 0:
         orient *= -1  # CDRs point in opposite direction as N-terminus
