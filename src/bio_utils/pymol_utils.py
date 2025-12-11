@@ -271,7 +271,7 @@ def load_cgo_arrow(
     name : str
         Name of arrow object.
     color : str or list of three floats
-        Registered color name or RGB values in range [0.0, 1.0] or [0, 255]
+        Registered color name or RGB values in range [0.0, 1.0] or [0, 255].
     tail_length : float
         Length of tail in A.
     tail_width : float
