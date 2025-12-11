@@ -217,7 +217,7 @@ def add_palette(palette_name):
 cmd.extend(add_palette)
 
 
-def load_glob(pattern, recursive=False):
+def load_glob(pattern, recursive=False, load_fn=None, name_fn=None):
     """
     Load multiple files matching a glob pattern.
 
@@ -227,9 +227,23 @@ def load_glob(pattern, recursive=False):
         Glob pattern to match files (e.g., '*.pdb').
     recursive : bool, optional
         If True, the pattern '**' will match files and directories recursively.
+    load_fn : function
+        Function to load file at path. Accepts a path string as its first argument and, optionally,
+        a name for the loaded object as its second argument.
+    name_fn : function
+        Function to generate names for loaded objects. Accepts a path string as a single argument
+        and returns a string.
     """
-    for path in glob.glob(pattern, recursive=recursive):
-        cmd.load(path)
+    if load_fn is None:
+        load_fn = cmd.load
+    paths = glob.glob(pattern, recursive=recursive)
+    if name_fn is None:
+        for path in paths:
+            load_fn(path)
+    else:
+        for path in paths:
+            name = name_fn(path)
+            load_fn(path, name)
 
 
 cmd.extend(load_glob)
