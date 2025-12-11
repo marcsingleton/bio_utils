@@ -1,6 +1,7 @@
 """Functions for PyMOL visualizations."""
 
 import glob
+from itertools import groupby
 
 import matplotlib.colors as colors
 import matplotlib.pyplot as plt
@@ -302,3 +303,118 @@ def load_cgo_arrow(
 
 
 cmd.extend(load_cgo_arrow)
+
+
+def load_nanobody_arrow(
+    name,
+    color,
+    selection='*',
+    state=-1,
+    min_strand_len=5,
+    N_term_orient_len=2,
+    mode='strand-bounds',
+    arrow_kwargs=None,
+):
+    if min_strand_len < 1:
+        raise ValueError('min_strand_len must be greater than 1')
+    if N_term_orient_len < 2:
+        raise ValueError('N_term_orient_len must be greater than 2')
+    accepted_modes = ['strand-bounds', 'pca']
+    if mode not in accepted_modes:
+        raise RuntimeError(f'Mode {mode} not recognized. Must be in {accepted_modes}.')
+    if arrow_kwargs is None:
+        arrow_kwargs = {}
+
+    # Gather CA atoms (with state assignments)
+    atoms = []
+    cmd.iterate_state(
+        state,
+        f'({selection}) and (name CA)',
+        lambda atom: atoms.append((atom.ss, (atom.x, atom.y, atom.z))),
+    )
+    if len(atoms) == 0:
+        raise RuntimeError('No atoms in selection.')
+
+    # Check for at least one beta strand
+    states = set()
+    for ss, _ in atoms:
+        states.add(ss)
+    if 'S' not in states:
+        raise RuntimeError('No beta strands in nanbody')
+
+    # Calculate origin and orient vectors
+    grouped = groupby(atoms, key=lambda x: x[0])
+    if mode == 'strand-bounds':
+        beta_coords = []
+        boundary_pairs = []
+        for key, group in grouped:
+            group = [x[1] for x in group]
+            if key == 'S' and len(group) >= min_strand_len:
+                beta_coords.extend(group)
+                boundary_pairs.append((group[0], group[-1]))
+        if len(beta_coords) == 0:
+            raise RuntimeError('No beta strands passed length filter.')
+
+        # Calculate strand unit vectors
+        vecs = []
+        for start, stop in boundary_pairs:
+            start, stop = np.array(start), np.array(stop)
+            vec = stop - start
+            norm = np.linalg.norm(vec)
+            if np.isclose(norm, 0):
+                raise RuntimeError('Length 0 vector detected. Check for beta strands of length 1.')
+            vec /= np.linalg.norm(vec)
+            vecs.append(vec)
+
+        # Point vectors in same direction as first
+        if len(vecs) > 1:
+            ref = vecs[0]
+            new_vecs = [ref]
+            for vec in vecs[1:]:
+                if np.dot(ref, vec) < 0:
+                    new_vecs.append(-vec)
+            vecs = new_vecs
+
+        # Average coordinates
+        orient = np.stack(vecs).mean(axis=0)
+        origin = np.array(beta_coords).mean(axis=0)
+    elif mode == 'pca':
+        beta_coords = []
+        for key, group in grouped:
+            group = [x[1] for x in group]
+            if key == 'S' and len(group) >= min_strand_len:
+                beta_coords.extend(group)
+        if len(beta_coords) == 0:
+            raise RuntimeError('No beta strands passed length filter.')
+
+        X = np.array(beta_coords)
+        mu = X.mean(axis=0)
+        X -= mu
+        cov = X.T @ X
+        eig_vals, eig_vecs = np.linalg.eig(cov)
+        eig_argmax = np.argmax(eig_vals)
+
+        origin = mu
+        orient = eig_vecs[eig_argmax]
+    else:
+        raise RuntimeError(
+            f'Mode {mode} not recognized. '
+            'This error should be unreachable--ensure guard clause includes all recognized modes.'
+        )
+
+    # Check for proper orientation
+    if N_term_orient_len > len(atoms):
+        N_term_orient_len = len(atoms)
+        raise RuntimeWarning(
+            'N_term_orient_len is greater than selection length. Setting to selection length.'
+        )
+    N_term_coord_0 = np.array(atoms[0][1])
+    N_term_coord_1 = np.array(atoms[N_term_orient_len - 1][1])
+    N_term_vec = N_term_coord_1 - N_term_coord_0
+    if np.dot(N_term_vec, orient) > 0:
+        orient *= -1  # CDRs point in opposite direction as N-terminus
+
+    load_cgo_arrow(origin, orient, name, color, **arrow_kwargs)
+
+
+cmd.extend(load_nanobody_arrow)
