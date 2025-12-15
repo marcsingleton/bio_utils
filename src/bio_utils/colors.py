@@ -182,3 +182,99 @@ nucleic_color_map = {
     'C': '#7FADEA',
     'N': '#93908F',
 }
+
+RGBA_MIN, RGBA_MAX = 0, 255
+
+
+def to_rgb(color, norm=False):
+    """
+    Convert hex color to RGB tuple, dropping alpha channel if present.
+
+    Parameters
+    ----------
+    color : str
+        Hex color with RGB or RGBA channels, prefixed with #.
+    norm : bool
+        If True, normalize to (0.0, 1.0).
+
+    Returns
+    -------
+    rgb : tuple
+        Tuple of RGB values.
+    """
+    return to_rgba(color, norm=norm)[:3]
+
+
+def to_rgba(color, alpha=None, norm=False):
+    """
+    Convert hex color to RGBA tuple.
+
+    Parameters
+    ----------
+    colors : str
+        Hex color with RGB or RGBA channels, prefixed with #.
+    alpha : int
+        Value for alpha channel. If provided, overrides alpha channel in color. Otherwise, alpha is
+        inferred from hex color, or if RGA-only, is assigned the maximum value.
+    norm : bool
+        If True, normalize to (0.0, 1.0).
+    """
+    if not color.startswith('#'):
+        raise RuntimeError(f'Color {color} does not start with #.')
+    digits = color[1:]
+    if len(digits) not in [6, 8]:
+        raise RuntimeError(f'Color {color} does not contain 6 or 8 characters')
+    if any(digit not in hexdigits for digit in digits):
+        raise RuntimeError(f'Color {color} contains non hex digits.')
+    if alpha is None:
+        if len(digits) == 8:
+            alpha = int(digits[-2:], base=16)
+        else:
+            alpha = RGBA_MAX
+    if not isinstance(alpha, int):
+        raise TypeError(f'Alpha {alpha} is not int.')
+    if not (RGBA_MIN <= alpha <= RGBA_MAX):
+        raise ValueError(f'Alpha {alpha} not >= {RGBA_MIN} and <= {RGBA_MAX}.')
+
+    rgba = [int(digits[i : i + 2], base=16) for i in range(0, 6, 2)]
+    rgba.append(alpha)
+    if norm:
+        rgba = [value / RGBA_MAX for value in rgba]
+    rgba = tuple(rgba)
+
+    return rgba
+
+
+def to_hex(rgba):
+    """
+    Convert RGB/RGBA iterable to hex color.
+
+    Parameters
+    ----------
+    rgba : iterable
+        Iterable of RGB/RGBA values
+
+    Returns
+    -------
+    color : str
+    """
+    rgba = list(rgba)  # Capture iterables as list
+    input_rgba = rgba  # For printing original input in errors
+    if len(rgba) not in [3, 4]:
+        raise RuntimeError(f'rgba {input_rgba} is not length 3 or 4.')
+    all_int = all(isinstance(c, int) for c in rgba)
+    all_float = all(isinstance(c, float) for c in rgba)
+    if not (all_int or all_float):
+        raise TypeError(f'rgba {input_rgba} is not all int or all float.')
+    if all_float:
+        rgba = [int(RGBA_MAX * c) for c in rgba]
+    all_allowed = all([RGBA_MIN <= c <= RGBA_MAX for c in rgba])
+    if not all_allowed:
+        raise ValueError(f'rgba {input_rgba} contains values outside {RGBA_MIN} and {RGBA_MAX}.')
+
+    color = ['#']
+    for c in rgba:
+        color.append(f'{c:02X}')
+    color = ''.join(color)
+
+    return color
