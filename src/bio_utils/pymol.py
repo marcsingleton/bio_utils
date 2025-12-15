@@ -169,7 +169,7 @@ def set_style(style_name):
 cmd.extend(set_style)
 
 
-def load_color_scheme(name):
+def load_color_scheme(name, as_cycle=False):
     """
     Add color scheme from bio_utils.color module into color namespace.
 
@@ -177,6 +177,8 @@ def load_color_scheme(name):
     ----------
     name : str
         Name of color scheme. See bio_utils.color for details.
+    as_cycle : bool
+        If True, names colors with as 'C{index}'. Otherwise named as '{name}_{index}'.
     """
     # Some bookkeeping for internal clarity
     scheme_name = name
@@ -184,10 +186,14 @@ def load_color_scheme(name):
 
     if scheme_name not in bu_colors.color_schemes:
         raise RuntimeError(f'Color scheme {scheme_name} not found in defined color schemes.')
+    if as_cycle:
+        prefix = 'C'
+    else:
+        prefix = f'{scheme_name}_'
 
     color_scheme = bu_colors.color_schemes[scheme_name]
     for i, color in enumerate(color_scheme):
-        cmd.set_color(f'{color_scheme}_{i}', mpl_colors.to_rgb(color))
+        cmd.set_color(f'{prefix}{i}', mpl_colors.to_rgb(color))
 
 
 cmd.extend(load_color_scheme)
