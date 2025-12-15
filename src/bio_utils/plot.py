@@ -9,73 +9,7 @@ from matplotlib.text import TextPath
 from matplotlib.ticker import MaxNLocator
 from matplotlib.transforms import Affine2D
 
-tableau_10 = [
-    '#4E79A7',  # blue
-    '#F28E2B',  # orange
-    '#E15759',  # red
-    '#76B7B2',  # cyan
-    '#59A14F',  # green
-    '#EDC948',  # yellow
-    '#B07AA1',  # purple
-    '#FF9DA7',  # pink
-    '#9C755F',  # brown
-    '#BAB0AC',  # grey
-]
-tableau_20 = [
-    '#4E79A7',  # blue
-    '#F28E2B',  # orange
-    '#E15759',  # red
-    '#499894',  # dark_cyan
-    '#59A14F',  # green
-    '#B6992D',  # dark_yellow
-    '#B07AA1',  # purple
-    '#D37295',  # maroon
-    '#9D7660',  # dark_brown
-    '#79706E',  # dark_grey
-    '#A0CBE8',  # light_blue
-    '#FFBE7D',  # light_orange
-    '#FF9D9A',  # light_red
-    '#86BCB6',  # light_cyan
-    '#8CD17D',  # light_green
-    '#F1CE63',  # light_yellow
-    '#D4A6C8',  # light_purple
-    '#FABFD2',  # light_maroon
-    '#D7B5A6',  # light_brown
-    '#BAB0AC',  # grey
-]
-
-protein_colormap = {
-    'A': '#6DD7A1',
-    'I': '#55C08C',
-    'L': '#55C08C',
-    'V': '#55C08C',
-    'M': '#55C08C',
-    'F': '#B897EC',
-    'Y': '#B897EC',
-    'W': '#A180D2',
-    'S': '#FFBE74',
-    'T': '#FFBE74',
-    'N': '#77EAF4',
-    'Q': '#77EAF4',
-    'D': '#EE8485',
-    'E': '#EE8485',
-    'H': '#96C4FF',
-    'K': '#7FADEA',
-    'R': '#7FADEA',
-    'C': '#FAED70',
-    'G': '#E2DEDD',
-    'P': '#FFB1F1',
-    'X': '#93908F',
-    '-': '#FFFFFF',
-    '.': '#3F3F3F',
-}
-nucleic_colormap = {
-    'A': '#6DD7A1',
-    'T': '#EE8485',
-    'G': '#E2DEDD',
-    'C': '#7FADEA',
-    'N': '#93908F',
-}
+import bio_utils.colors as bu_colors
 
 
 def _get_ratio(rows, cols, hspace, data_height, data_hspace, max_cols):
@@ -177,7 +111,7 @@ def plot_alignment(
     if sym_kwargs is None:
         sym_kwargs = {'fontname': 'monospace'}
     if colormap is None:
-        colormap = protein_colormap
+        colormap = bu_colors.protein_color_map
 
     if not data_axs:
         data_height = 0
@@ -364,7 +298,7 @@ def plot_profile(alignment, alphabet, ax=None, start=1, width=1, colormap=None, 
     if ax is None:
         _, ax = plt.subplots()
     if colormap is None:
-        colormap = protein_colormap
+        colormap = bu_colors.protein_color_map
     if fontprop is None:
         {'family': ['monospace']}
 
@@ -407,129 +341,3 @@ def plot_profile(alignment, alphabet, ax=None, start=1, width=1, colormap=None, 
             y0 += y
 
     return ax
-
-
-[tableau_10]
-blue = '#4E79A7'
-orange = '#F28E2B'
-red = '#E15759'
-cyan = '#76B7B2'
-green = '#59A14F'
-yellow = '#EDC948'
-purple = '#B07AA1'
-pink = '#FF9DA7'
-brown = '#9C755F'
-grey = '#BAB0AC'
-
-[tableau_20]
-blue = '#4E79A7'
-orange = '#F28E2B'
-red = '#E15759'
-dark_cyan = '#499894'
-green = '#59A14F'
-dark_yellow = '#B6992D'
-purple = '#B07AA1'
-maroon = '#D37295'
-brown = '#9D7660'
-dark_grey = '#79706E'
-light_blue = '#A0CBE8'
-light_orange = '#FFBE7D'
-light_red = '#FF9D9A'
-light_cyan = '#86BCB6'
-light_green = '#8CD17D'
-light_yellow = '#F1CE63'
-light_purple = '#D4A6C8'
-light_maroon = '#FABFD2'
-light_brown = '#D7B5A6'
-grey = '#BAB0AC'
-
-[gradients]
-blacks = [
-    '#000000',
-    '#1B1B1B',
-    '#333333',
-    '#555555',
-    '#666666',
-    '#898989',
-]
-
-whites = [
-    '#FFFFFF',
-    '#F5F5F5',
-    '#E6E6E6',
-    '#D4D4D4',
-    '#C0C0C0',
-    '#B4B4B4',
-]
-
-oranges = [
-    '#F28E2B',
-    '#F9A655',
-    '#FFBE7D',
-]
-
-yellows = [
-    '#B6992D',
-    '#D3B348',
-    '#F1CE63',
-]
-
-greens = [
-    '#59A14F',
-    '#72B966',
-    '#8CD17D',
-]
-
-cyans = [
-    '#499894',
-    '#69AAA5',
-    '#86BCB6',
-]
-
-blues = [
-    '#4E79A7',
-    '#75A1C7',
-    '#A0CBE8',
-]
-
-blue_greys = [
-    '#606B76',
-    '#818B91',
-    '#A7ACAD',
-]
-
-purples = [
-    '#B07AA1',
-    '#C290B4',
-    '#D4A6C8',
-]
-
-pinks = [
-    '#D37295',
-    '#E799B3',
-    '#FABFD2',
-]
-
-reds = [
-    '#E15759',
-    '#F17B79',
-    '#FF9D9A',
-]
-
-browns = [
-    '#9D7660',
-    '#BA9582',
-    '#D7B5A6',
-]
-
-greys = [
-    '#79706E',
-    '#998F8C',
-    '#BAB0AC',
-]
-
-highlights = [
-    '#76B7B2',
-    '#FF9DA7',
-    '#EDC948',
-]
