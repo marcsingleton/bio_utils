@@ -407,3 +407,129 @@ def plot_profile(alignment, alphabet, ax=None, start=1, width=1, colormap=None, 
             y0 += y
 
     return ax
+
+
+[tableau_10]
+blue = '#4E79A7'
+orange = '#F28E2B'
+red = '#E15759'
+cyan = '#76B7B2'
+green = '#59A14F'
+yellow = '#EDC948'
+purple = '#B07AA1'
+pink = '#FF9DA7'
+brown = '#9C755F'
+grey = '#BAB0AC'
+
+[tableau_20]
+blue = '#4E79A7'
+orange = '#F28E2B'
+red = '#E15759'
+dark_cyan = '#499894'
+green = '#59A14F'
+dark_yellow = '#B6992D'
+purple = '#B07AA1'
+maroon = '#D37295'
+brown = '#9D7660'
+dark_grey = '#79706E'
+light_blue = '#A0CBE8'
+light_orange = '#FFBE7D'
+light_red = '#FF9D9A'
+light_cyan = '#86BCB6'
+light_green = '#8CD17D'
+light_yellow = '#F1CE63'
+light_purple = '#D4A6C8'
+light_maroon = '#FABFD2'
+light_brown = '#D7B5A6'
+grey = '#BAB0AC'
+
+[gradients]
+blacks = [
+    '#000000',
+    '#1B1B1B',
+    '#333333',
+    '#555555',
+    '#666666',
+    '#898989',
+]
+
+whites = [
+    '#FFFFFF',
+    '#F5F5F5',
+    '#E6E6E6',
+    '#D4D4D4',
+    '#C0C0C0',
+    '#B4B4B4',
+]
+
+oranges = [
+    '#F28E2B',
+    '#F9A655',
+    '#FFBE7D',
+]
+
+yellows = [
+    '#B6992D',
+    '#D3B348',
+    '#F1CE63',
+]
+
+greens = [
+    '#59A14F',
+    '#72B966',
+    '#8CD17D',
+]
+
+cyans = [
+    '#499894',
+    '#69AAA5',
+    '#86BCB6',
+]
+
+blues = [
+    '#4E79A7',
+    '#75A1C7',
+    '#A0CBE8',
+]
+
+blue_greys = [
+    '#606B76',
+    '#818B91',
+    '#A7ACAD',
+]
+
+purples = [
+    '#B07AA1',
+    '#C290B4',
+    '#D4A6C8',
+]
+
+pinks = [
+    '#D37295',
+    '#E799B3',
+    '#FABFD2',
+]
+
+reds = [
+    '#E15759',
+    '#F17B79',
+    '#FF9D9A',
+]
+
+browns = [
+    '#9D7660',
+    '#BA9582',
+    '#D7B5A6',
+]
+
+greys = [
+    '#79706E',
+    '#998F8C',
+    '#BAB0AC',
+]
+
+highlights = [
+    '#76B7B2',
+    '#FF9DA7',
+    '#EDC948',
+]
