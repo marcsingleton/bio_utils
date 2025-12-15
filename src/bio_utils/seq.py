@@ -2,6 +2,45 @@
 
 from textwrap import dedent
 
+table_strings = {
+    1: dedent("""\
+        AAs  = FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG
+        Starts = ---M------**--*----M---------------M----------------------------
+        Base1  = TTTTTTTTTTTTTTTTCCCCCCCCCCCCCCCCAAAAAAAAAAAAAAAAGGGGGGGGGGGGGGGG
+        Base2  = TTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGG
+        Base3  = TCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAG"""),
+    2: dedent("""\
+        AAs  = FFLLSSSSYY**CCWWLLLLPPPPHHQQRRRRIIMMTTTTNNKKSS**VVVVAAAADDEEGGGG
+        Starts = ----------**--------------------MMMM----------**---M------------
+        Base1  = TTTTTTTTTTTTTTTTCCCCCCCCCCCCCCCCAAAAAAAAAAAAAAAAGGGGGGGGGGGGGGGG
+        Base2  = TTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGG
+        Base3  = TCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAG"""),
+    3: dedent("""\
+        AAs  = FFLLSSSSYY**CCWWTTTTPPPPHHQQRRRRIIMMTTTTNNKKSSRRVVVVAAAADDEEGGGG
+        Starts = ----------**----------------------MM---------------M------------
+        Base1  = TTTTTTTTTTTTTTTTCCCCCCCCCCCCCCCCAAAAAAAAAAAAAAAAGGGGGGGGGGGGGGGG
+        Base2  = TTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGG
+        Base3  = TCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAG"""),
+}
+
+# fmt: off
+protein_alphabet = {
+    'A', 'C', 'D', 'E',
+    'F', 'G', 'H', 'I',
+    'K', 'L', 'M', 'N',
+    'P', 'Q', 'R', 'S',
+    'T', 'V', 'W', 'Y',
+    'X',
+}
+nucleic_alphabet = {
+    'G', 'A', 'T', 'C',
+    'U',
+    'R', 'Y', 'M', 'K', 'S', 'W',
+    'H', 'B', 'V', 'D',
+    'N',
+}
+# fmt: on
+
 
 def read_fasta(path):
     """
@@ -200,43 +239,3 @@ def _parse_table(table_string):
     for aa_sym, codon in zip(aa_syms, codons):
         table[codon] = aa_sym
     return table
-
-
-table_strings = {
-    1: dedent("""\
-        AAs  = FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG
-        Starts = ---M------**--*----M---------------M----------------------------
-        Base1  = TTTTTTTTTTTTTTTTCCCCCCCCCCCCCCCCAAAAAAAAAAAAAAAAGGGGGGGGGGGGGGGG
-        Base2  = TTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGG
-        Base3  = TCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAG"""),
-    2: dedent("""\
-        AAs  = FFLLSSSSYY**CCWWLLLLPPPPHHQQRRRRIIMMTTTTNNKKSS**VVVVAAAADDEEGGGG
-        Starts = ----------**--------------------MMMM----------**---M------------
-        Base1  = TTTTTTTTTTTTTTTTCCCCCCCCCCCCCCCCAAAAAAAAAAAAAAAAGGGGGGGGGGGGGGGG
-        Base2  = TTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGG
-        Base3  = TCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAG"""),
-    3: dedent("""\
-        AAs  = FFLLSSSSYY**CCWWTTTTPPPPHHQQRRRRIIMMTTTTNNKKSSRRVVVVAAAADDEEGGGG
-        Starts = ----------**----------------------MM---------------M------------
-        Base1  = TTTTTTTTTTTTTTTTCCCCCCCCCCCCCCCCAAAAAAAAAAAAAAAAGGGGGGGGGGGGGGGG
-        Base2  = TTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGGTTTTCCCCAAAAGGGG
-        Base3  = TCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAGTCAG"""),
-}
-
-# fmt: off
-protein_alphabet = {
-    'A', 'C', 'D', 'E',
-    'F', 'G', 'H', 'I',
-    'K', 'L', 'M', 'N',
-    'P', 'Q', 'R', 'S',
-    'T', 'V', 'W', 'Y',
-    'X',
-}
-nucleic_alphabet = {
-    'G', 'A', 'T', 'C',
-    'U',
-    'R', 'Y', 'M', 'K', 'S', 'W',
-    'H', 'B', 'V', 'D',
-    'N',
-}
-# fmt: on
