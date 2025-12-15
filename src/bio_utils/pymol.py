@@ -10,6 +10,8 @@ import pandas as pd
 import pymol.cmd as cmd
 import pymol.cgo as cgo
 
+import bio_utils.colors as bu_colors
+
 
 _plldt_records = [
     ('plddt_very_low', [255, 125, 69], 50),
@@ -166,55 +168,28 @@ def set_style(style_name):
 cmd.extend(set_style)
 
 
-def add_palette(palette_name):
+def load_color_scheme(name):
     """
-    Add colors from a pre-defined palette into color namespace.
+    Add color scheme from bio_utils.color module into color namespace.
 
     Parameters
     ----------
-    palette_name : str
-        Name of pre-defined palette. See source for details.
+    name : str
+        Name of color scheme. See bio_utils.color for details.
     """
-    if palette_name == 'tableau_10':
-        cmd.set_color('C0', [78, 121, 167])
-        cmd.set_color('C1', [242, 142, 43])
-        cmd.set_color('C2', [225, 87, 89])
-        cmd.set_color('C3', [118, 183, 178])
-        cmd.set_color('C4', [89, 161, 79])
-        cmd.set_color('C5', [237, 201, 72])
-        cmd.set_color('C6', [176, 122, 161])
-        cmd.set_color('C7', [255, 157, 167])
-        cmd.set_color('C8', [156, 117, 95])
-        cmd.set_color('C9', [186, 176, 172])
-    elif palette_name == 'tableau_20':
-        cmd.set_color('C0-A', [78, 121, 167])
-        cmd.set_color('C0-B', [160, 203, 232])
-        cmd.set_color('C1-A', [242, 142, 43])
-        cmd.set_color('C1-B', [255, 190, 125])
-        cmd.set_color('C2-A', [225, 87, 89])
-        cmd.set_color('C2-B', [255, 157, 154])
-        cmd.set_color('C3-A', [73, 152, 148])
-        cmd.set_color('C3-B', [134, 188, 182])
-        cmd.set_color('C4-A', [89, 161, 79])
-        cmd.set_color('C4-B', [140, 209, 125])
-        cmd.set_color('C5-A', [182, 153, 45])
-        cmd.set_color('C5-B', [241, 206, 99])
-        cmd.set_color('C6-A', [176, 122, 161])
-        cmd.set_color('C6-B', [212, 166, 200])
-        cmd.set_color('C7-A', [211, 114, 149])
-        cmd.set_color('C7-B', [250, 191, 210])
-        cmd.set_color('C8-A', [157, 118, 96])
-        cmd.set_color('C8-B', [215, 181, 166])
-        cmd.set_color('C9-A', [121, 112, 110])
-        cmd.set_color('C9-B', [186, 176, 172])
-    elif palette_name == 'plddt':
-        for name, rgb, _ in _plldt_records:
-            cmd.set_color(name, rgb)
-    else:
-        raise RuntimeError(f'Style {palette_name} not recognized')
+    # Some bookkeeping for internal clarity
+    scheme_name = name
+    del name
+
+    if scheme_name not in bu_colors.color_schemes:
+        raise RuntimeError(f'Color scheme {scheme_name} not found in defined color schemes.')
+
+    color_scheme = bu_colors.color_schemes[scheme_name]
+    for i, color in enumerate(color_scheme):
+        cmd.set_color(f'{color_scheme}_{i}', mpl_colors.to_rgb(color))
 
 
-cmd.extend(add_palette)
+cmd.extend(load_color_scheme)
 
 
 def load_glob(pattern, recursive=False, load_fn=None, name_fn=None):
