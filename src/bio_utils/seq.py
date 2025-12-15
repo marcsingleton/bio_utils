@@ -24,21 +24,56 @@ table_strings = {
 }
 
 # fmt: off
-protein_alphabet = {
+gap_syms = {'-', '.'}
+protein_ambiguous_sym = 'X'
+protein_expanded_syms = {
+    'J',  # leucine or isoleucine
+    'O',  # pyrrolysine
+    'U',  # selenocysteine
+}
+nucleic_ambiguous_sym = 'N'
+nucleic_expanded_syms = {
+    'R',  # A or G
+    'Y',  # C or T
+    'S',  # G or C
+    'W',  # A or T
+    'K',  # G or T
+    'M',  # A or C
+    'B',  # C or G or T
+    'D',  # A or G or T
+    'H',  # A or C or T
+    'V',  # A or C or G
+}
+
+protein_alphabet_strict = {
     'A', 'C', 'D', 'E',
     'F', 'G', 'H', 'I',
     'K', 'L', 'M', 'N',
     'P', 'Q', 'R', 'S',
     'T', 'V', 'W', 'Y',
-    'X',
 }
-nucleic_alphabet = {
-    'G', 'A', 'T', 'C',
-    'U',
-    'R', 'Y', 'M', 'K', 'S', 'W',
-    'H', 'B', 'V', 'D',
-    'N',
-}
+protein_alphabet_base = protein_alphabet_strict | set(protein_ambiguous_sym)
+protein_alphabet_gapped = protein_alphabet_base | gap_syms
+protein_alphabet_expanded = protein_alphabet_gapped | protein_expanded_syms
+protein_alphabet = protein_alphabet_base
+
+rna_alphabet_strict = {'G', 'A', 'U', 'C'}
+rna_alphabet_base = rna_alphabet_strict | set(nucleic_ambiguous_sym)
+rna_alphabet_gapped = rna_alphabet_base | gap_syms
+rna_alphabet_expanded = rna_alphabet_gapped | nucleic_expanded_syms
+rna_alphabet = rna_alphabet_base
+
+dna_alphabet_strict = {'G', 'A', 'T', 'C'}
+dna_alphabet_base = dna_alphabet_strict | set(nucleic_ambiguous_sym)
+dna_alphabet_gapped = dna_alphabet_base | gap_syms
+dna_alphabet_expanded = dna_alphabet_gapped | nucleic_expanded_syms
+dna_alphabet = dna_alphabet_base
+
+nucleic_alphabet_strict = rna_alphabet_strict | dna_alphabet_strict
+nucleic_alphabet_base = rna_alphabet_base | dna_alphabet_base
+nucleic_alphabet_gapped = rna_alphabet_gapped | dna_alphabet_gapped
+nucleic_alphabet_expanded = rna_alphabet_expanded | rna_alphabet_expanded
+nucleic_alphabet = nucleic_alphabet_base
 # fmt: on
 
 
