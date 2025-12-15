@@ -14,10 +14,10 @@ import bio_utils.colors as bu_colors
 
 
 _plldt_records = [
-    ('plddt_very_low', [255, 125, 69], 50),
-    ('plddt_low', [255, 219, 19], 70),
-    ('plddt_high', [101, 203, 243], 90),
-    ('plddt_very_high', [0, 83, 214], 100),
+    ('very_low', [255, 125, 69], 50),
+    ('low', [255, 219, 19], 70),
+    ('high', [101, 203, 243], 90),
+    ('very_high', [0, 83, 214], 100),
 ]
 
 
@@ -32,6 +32,7 @@ def color_plddt(selection='*'):
     """
     b_lower = 0
     for name, rgb, b_upper in _plldt_records:
+        name = f'plddt_{name}'
         cmd.set_color(name, rgb)
         cmd.color(name, f'({selection}) and (b > {b_lower}) and (b < {b_upper})')
         b_lower = b_upper
