@@ -3,7 +3,7 @@
 import glob
 from itertools import groupby
 
-import matplotlib.colors as colors
+import matplotlib.colors as mpl_colors
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -86,7 +86,7 @@ def color_from_table(
 
     if isinstance(cmap, str):
         cmap = plt.get_cmap(cmap)
-    elif not isinstance(colors.Colormap):
+    elif not isinstance(mpl_colors.Colormap):
         raise RuntimeError('Argument cmap is not the name of a registered Colormap or a Colormap.')
 
     if normalize:
@@ -97,7 +97,7 @@ def color_from_table(
 
     for atom_id, value in zip(data[id_field], values):
         color = cmap(value)
-        color_string = '0x' + colors.to_hex(color)[1:]  # Trim preceding #
+        color_string = '0x' + mpl_colors.to_hex(color)[1:]  # Trim preceding #
         cmd.color(color_string, f'id {atom_id} and ({selection})')
 
 
