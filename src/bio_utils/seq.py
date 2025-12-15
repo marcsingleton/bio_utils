@@ -181,11 +181,11 @@ def translate(
         table_string = table_strings[table]
         table = _parse_table(table_string)
     elif not isinstance(table, dict):
-        raise ValueError('Parameter table is not int or dict')
+        raise TypeError('Parameter table is not int or dict')
     if gap_syms is None:
         gap_syms = '-.'
     elif not isinstance(gap_syms, str):
-        raise ValueError('Parameter gap_syms is not str.')
+        raise TypeError('Parameter gap_syms is not str.')
     if ambiguous_case not in {'upper', 'lower'}:
         raise ValueError("Parameter ambiguous_case is not in {'upper', 'lower'}.")
 
@@ -222,7 +222,7 @@ def translate(
             elif ambiguous_case == 'lower':
                 aa_sym = aa_sym.lower()
             else:
-                raise RuntimeError("Parameter ambiguous case is not in {'upper', 'lower'}")
+                raise ValueError("Parameter ambiguous case is not in {'upper', 'lower'}")
         protein_seq.append(aa_sym)
     protein_seq = ''.join(protein_seq)
     return protein_seq

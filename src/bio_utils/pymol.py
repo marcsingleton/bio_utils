@@ -339,7 +339,7 @@ def load_nanobody_arrow(
         raise ValueError('N_term_len must be greater than 2')
     accepted_modes = ['strand-bounds', 'pca']
     if mode not in accepted_modes:
-        raise RuntimeError(f'Mode {mode} not recognized. Must be in {accepted_modes}.')
+        raise ValueError(f'Mode {mode} not recognized. Must be in {accepted_modes}.')
     if arrow_kwargs is None:
         arrow_kwargs = {}
 
@@ -464,14 +464,14 @@ def load_nanobody_as_arrow(
     nanobody_kwargs : dict
         Additional arguments unpacked in load_nanobody_arrow call.
     """
+    # Some bookkeeping for internal clarity
+    arrow_name = name
+    del name
+
     if nanobody_kwargs is None:
         nanobody_kwargs = {}
     if arrow_kwargs is None:
         arrow_kwargs = {}
-
-    # Some bookkeeping for internal clarity
-    arrow_name = name
-    del name
 
     cmd.load(path)
     model_name = cmd.get_object_list()[-1]
