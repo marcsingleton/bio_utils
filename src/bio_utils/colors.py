@@ -178,8 +178,9 @@ protein_colormap = {
 nucleic_colormap = {
     'A': '#6DD7A1',
     'T': '#EE8485',
-    'G': '#E2DEDD',
+    'G': '#FFBE74',
     'C': '#7FADEA',
+    'U': '#EE8485',
     'N': '#93908F',
 }
 
