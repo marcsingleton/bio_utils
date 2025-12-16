@@ -216,23 +216,14 @@ def _get_profile(alignment, alphabet, norm=True):
     fs : list of numeric
         Counts or fractions of "in alphabet" symbols at each position in alignment.
     """
-    if alphabet == 'protein':
-        # fmt: off
-        alphabet = bu_sequences.protein_alphabet_strict
-        # fmt: on
-    elif alphabet == 'nucleic':
-        alphabet = bu_sequences.nucleic_alphabet_strict
-    else:
-        try:
-            alphabet = set(alphabet)
-        except TypeError:
-            raise RuntimeError('Failed to coerce parameter alphabet into a set.')
-        if len(alphabet) == 0:
-            raise RuntimeError('Argument alphabet is empty.')
-        if not all([isinstance(str, sym) and len(sym) == 0 for sym in alphabet]):
-            raise RuntimeError(
-                'Not all elements of argument alphabet are single character strings.'
-            )
+    try:
+        alphabet = set(alphabet)
+    except TypeError:
+        raise RuntimeError('Failed to coerce parameter alphabet into a set.')
+    if len(alphabet) == 0:
+        raise RuntimeError('Argument alphabet is empty.')
+    if not all([isinstance(sym, str) and len(sym) == 1 for sym in alphabet]):
+        raise RuntimeError('Not all elements of argument alphabet are single character strings.')
 
     alignment = list(alignment)
     seqs = [seq for _, seq in alignment]
@@ -290,6 +281,16 @@ def plot_profile(alignment, alphabet, ax=None, start=1, width=1, colormap=None, 
     -------
     ax : Axes
     """
+    alphabet_records = {
+        'protein': (bu_sequences.protein_alphabet_strict, bu_colors.protein_colormap),
+        'nucleic': (bu_sequences.nucleic_alphabet_strict, bu_colors.nucleic_colormap),
+    }
+    if alphabet in alphabet_records:
+        alphabet, default_colormap = alphabet_records[alphabet]
+        if colormap is None:
+            colormap = default_colormap
+    else:
+        raise RuntimeError
     if ax is None:
         _, ax = plt.subplots()
     if colormap is None:
