@@ -147,10 +147,10 @@ tableau_highlights = [
 ]
 color_schemes['tableau_highlights'] = tableau_highlights
 
-# COLOR MAPS
-color_maps = {}
+# COLORMAPS
+colormaps = {}
 
-protein_color_map = {
+protein_colormap = {
     'A': '#6DD7A1',
     'I': '#55C08C',
     'L': '#55C08C',
@@ -175,7 +175,7 @@ protein_color_map = {
     '-': '#FFFFFF',
     '.': '#3F3F3F',
 }
-nucleic_color_map = {
+nucleic_colormap = {
     'A': '#6DD7A1',
     'T': '#EE8485',
     'G': '#E2DEDD',
