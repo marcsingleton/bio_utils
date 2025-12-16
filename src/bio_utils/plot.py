@@ -10,6 +10,7 @@ from matplotlib.ticker import MaxNLocator
 from matplotlib.transforms import Affine2D
 
 import bio_utils.colors as bu_colors
+import bio_utils.sequences as bu_sequences
 
 
 def _get_ratio(rows, cols, hspace, data_height, data_hspace, max_cols):
@@ -217,16 +218,10 @@ def _get_profile(alignment, alphabet, norm=True):
     """
     if alphabet == 'protein':
         # fmt: off
-        alphabet = {
-            'A', 'C', 'D', 'E',
-            'F', 'G', 'H', 'I',
-            'K', 'L', 'M', 'N',
-            'P', 'Q', 'R', 'S',
-            'T', 'V', 'W', 'Y',
-        }
+        alphabet = bu_sequences.protein_alphabet_strict
         # fmt: on
     elif alphabet == 'nucleic':
-        alphabet = {'A', 'T', 'G', 'C'}
+        alphabet = bu_sequences.nucleic_alphabet_strict
     else:
         try:
             alphabet = set(alphabet)
