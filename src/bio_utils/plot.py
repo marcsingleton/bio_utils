@@ -9,8 +9,8 @@ from matplotlib.text import TextPath
 from matplotlib.ticker import MaxNLocator
 from matplotlib.transforms import Affine2D
 
-import bio_utils.colors as bu_colors
-import bio_utils.sequences as bu_sequences
+import bio_utils.color as bu_color
+import bio_utils.sequence as bu_sequence
 
 
 def _get_ratio(rows, cols, hspace, data_height, data_hspace, max_cols):
@@ -112,7 +112,7 @@ def plot_alignment(
     if sym_kwargs is None:
         sym_kwargs = {'fontname': 'monospace'}
     if colormap is None:
-        colormap = bu_colors.protein_color_map
+        colormap = bu_color.protein_color_map
 
     if not data_axs:
         data_height = 0
@@ -282,8 +282,8 @@ def plot_profile(alignment, alphabet, ax=None, start=1, width=1, colormap=None, 
     ax : Axes
     """
     alphabet_records = {
-        'protein': (bu_sequences.protein_alphabet_strict, bu_colors.protein_colormap),
-        'nucleic': (bu_sequences.nucleic_alphabet_strict, bu_colors.nucleic_colormap),
+        'protein': (bu_sequence.protein_alphabet_strict, bu_color.protein_colormap),
+        'nucleic': (bu_sequence.nucleic_alphabet_strict, bu_color.nucleic_colormap),
     }
     if alphabet in alphabet_records:
         alphabet, default_colormap = alphabet_records[alphabet]
@@ -294,7 +294,7 @@ def plot_profile(alignment, alphabet, ax=None, start=1, width=1, colormap=None, 
     if ax is None:
         _, ax = plt.subplots()
     if colormap is None:
-        colormap = bu_colors.protein_color_map
+        colormap = bu_color.protein_color_map
     if fontprop is None:
         {'family': ['monospace']}
 

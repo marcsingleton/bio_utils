@@ -10,7 +10,7 @@ import pandas as pd
 import pymol.cmd as cmd
 import pymol.cgo as cgo
 
-import bio_utils.colors as bu_colors
+import bio_utils.color as bu_color
 
 
 _plldt_records = [
@@ -184,14 +184,14 @@ def load_color_scheme(name, as_cycle=False):
     scheme_name = name
     del name
 
-    if scheme_name not in bu_colors.color_schemes:
+    if scheme_name not in bu_color.color_schemes:
         raise RuntimeError(f'Color scheme {scheme_name} not found in defined color schemes.')
     if as_cycle:
         prefix = 'C'
     else:
         prefix = f'{scheme_name}_'
 
-    color_scheme = bu_colors.color_schemes[scheme_name]
+    color_scheme = bu_color.color_schemes[scheme_name]
     for i, color in enumerate(color_scheme):
         cmd.set_color(f'{prefix}{i}', mpl_colors.to_rgb(color))
 
