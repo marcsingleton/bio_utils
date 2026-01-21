@@ -131,14 +131,14 @@ tableau_browns = [
     '#BA9582',
     '#D7B5A6',
 ]
-color_schemes['tableau_whites'] = tableau_whites
+color_schemes['tableau_browns'] = tableau_browns
 
 tableau_greys = [
     '#79706E',
     '#998F8C',
     '#BAB0AC',
 ]
-color_schemes['tableau_browns'] = tableau_browns
+color_schemes['tableau_greys'] = tableau_greys
 
 tableau_highlights = [
     '#76B7B2',
