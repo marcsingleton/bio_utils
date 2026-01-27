@@ -91,6 +91,18 @@ cmd.extend(color_plddt)
 
 
 def color_hydrophobicity(selection='*', scale='kyte-doolittle', cmap='PiYG'):
+    """
+    Color atoms by hydrophobicity.
+
+    Parameters
+    ----------
+    selection : str
+        Selection-expression or name-pattern corresponding to the atoms or objects to be colored.
+    scale : str
+        Name of registered hydrophobicity scale.
+    cmap : Colormap or str
+        Matplotlib Colormap or name of registered cmap.
+    """
     if scale not in _hydrophobicity_scales:
         raise RuntimeError('Argument scale is not a registered hydrophobicity scale.')
     if isinstance(cmap, str):
@@ -137,8 +149,8 @@ def color_from_table(
         Selection-expression or name-pattern corresponding to the atoms or objects to be colored.
     id_field: str
         The column containing the atom id.
-    cmap : str
-        Name of cmap.
+    cmap : Colormap or str
+        Matplotlib Colormap or name of registered cmap.
     normalize : bool
         If True, scale the values with min-max transformation.
     """
