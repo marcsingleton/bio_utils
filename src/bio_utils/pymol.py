@@ -123,7 +123,7 @@ def set_style(style_name):
         cmd.bg_color('white')
         cmd.set('ray_trace_mode', 1)  # 1 renders with outlines
         cmd.set('ray_shadows', 'off')  # Turns off ray trace shadows
-        cmd.set('ray_trace_disco_factor', 0.2)  # Fewer lines on surfaces
+        cmd.set('ray_trace_disco_factor', 1)  # No lines on surfaces
         cmd.set('antialias', 2)
         cmd.set('ambient', 0.5)  # Ambient light
         cmd.set('direct', 0.2)  # Camera light
