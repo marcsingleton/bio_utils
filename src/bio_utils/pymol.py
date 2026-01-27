@@ -20,6 +20,56 @@ _plldt_records = [
     ('very_high', [0, 83, 214], 100),
 ]
 
+_hydrophobicity_scales = {}
+
+_kyte_doolittle_records = [
+    ('A', 1.8),
+    ('C', 2.5),
+    ('D', -3.5),
+    ('E', -3.5),
+    ('F', 2.8),
+    ('G', -0.4),
+    ('H', -3.2),
+    ('I', 4.5),
+    ('K', -3.9),
+    ('L', 3.8),
+    ('M', 1.9),
+    ('N', -3.5),
+    ('P', -1.6),
+    ('Q', -3.5),
+    ('R', -4.5),
+    ('S', -0.8),
+    ('T', -0.7),
+    ('V', 4.2),
+    ('W', -0.9),
+    ('Y', -1.3),
+]
+_hydrophobicity_scales['kyte-doolittle'] = _kyte_doolittle_records
+
+_eisenberg_records = [
+    ('A', 0.62),
+    ('C', 0.29),
+    ('D', -0.9),
+    ('E', -0.74),
+    ('F', 1.19),
+    ('G', 0.48),
+    ('H', -0.4),
+    ('I', 1.38),
+    ('K', -1.5),
+    ('L', 1.06),
+    ('M', 0.64),
+    ('N', -0.78),
+    ('P', 0.12),
+    ('Q', -0.85),
+    ('R', -2.53),
+    ('S', -0.18),
+    ('T', -0.05),
+    ('V', 1.08),
+    ('W', 0.81),
+    ('Y', 0.26),
+]
+_hydrophobicity_scales['eisenberg'] = _eisenberg_records
+
 
 def color_plddt(selection='*'):
     """
@@ -38,6 +88,27 @@ def color_plddt(selection='*'):
 
 
 cmd.extend(color_plddt)
+
+
+def color_hydrophobicity(selection='*', scale='kyte-doolittle', cmap='PiYG'):
+    if scale not in _hydrophobicity_scales:
+        raise RuntimeError('Argument scale is not a registered hydrophobicity scale.')
+    if isinstance(cmap, str):
+        cmap = plt.get_cmap(cmap)
+    elif not isinstance(mpl_colors.Colormap):
+        raise RuntimeError('Argument cmap is not the name of a registered Colormap or a Colormap.')
+
+    records = _hydrophobicity_scales[scale]
+    vmin = min(record[1] for record in records)
+    vmax = max(record[1] for record in records)
+    norm = plt.Normalize(vmin, vmax)
+
+    for sym, value in records:
+        color = '0x' + mpl_colors.to_hex(cmap(norm(value))).removeprefix('#')
+        cmd.color(color, f'({selection}) and pepseq {sym}')
+
+
+cmd.extend(color_hydrophobicity)
 
 
 def color_from_table(
