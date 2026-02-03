@@ -291,7 +291,10 @@ def plot_profile(alignment, alphabet, ax=None, start=1, width=1, colormap=None, 
         if colormap is None:
             colormap = default_colormap
     else:
-        raise RuntimeError
+        raise ValueError(
+            f"'{alphabet}' is not a valid value for alphabet; "
+            f"supported values are 'protein' and 'nucleic'"
+        )
     if ax is None:
         _, ax = plt.subplots()
     if colormap is None:
