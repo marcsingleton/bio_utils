@@ -52,6 +52,7 @@ def _get_best_max_cols(rows, cols, width, height, hspace, data_height, data_hspa
 
 def plot_alignment(
     alignment,
+    *,
     fig=None,
     hspace=0.5,
     data_axs=False,
@@ -255,7 +256,7 @@ def _get_profile(alignment, alphabet, norm=True):
     return p_array, fs
 
 
-def plot_profile(alignment, alphabet, ax=None, start=1, width=1, colormap=None, fontprop=None):
+def plot_profile(alignment, alphabet, *, ax=None, start=1, width=1, colormap=None, fontprop=None):
     """
     Plot a profile from an alignment.
 
