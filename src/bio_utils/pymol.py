@@ -387,7 +387,7 @@ cmd.extend(load_cgo_arrow)
 
 def load_nanobody_arrow(
     name,
-    color,
+    color=None,
     selection='*',
     state=-1,
     min_strand_len=5,
@@ -402,8 +402,9 @@ def load_nanobody_arrow(
     ----------
     name : str
         Name of arrow object.
-    color : str or list of three floats
-        Registered color name or RGB values in range [0.0, 1.0] or [0, 255].
+    color : None or str or list of three floats
+        If None, infer from first carbon atom in selection. Otherwise, a registered color name or
+        RGB values in range [0.0, 1.0] or [0, 255].
     selection : str
         Selection-expression or name-pattern corresponding to the nanobody atoms or object.
     state : int
@@ -426,6 +427,14 @@ def load_nanobody_arrow(
         raise ValueError(f'Mode {mode} not recognized. Must be in {accepted_modes}.')
     if arrow_kwargs is None:
         arrow_kwargs = {}
+
+    # Set color
+    if color is None:
+        indices = []
+        cmd.iterate(f'first (({selection}) and elem C)', lambda x: indices.append(x.color))
+        if not indices:
+            raise RuntimeError('No carbon atoms in selection to infer color.')
+        color = cmd.get_color_tuple(indices[0])
 
     # Gather CA atoms (with state assignments)
     atoms = []
@@ -539,8 +548,9 @@ def load_nanobody_as_arrow(
         Path to structure.
     name : str
         Name of arrow object.
-    color : str or list of three floats
-        Registered color name or RGB values in range [0.0, 1.0] or [0, 255].
+    color : None or str or list of three floats
+        If None, infer from first carbon atom in selection. Otherwise, a registered color name or
+        RGB values in range [0.0, 1.0] or [0, 255].
     selection : str
         Selection-expression or name-pattern corresponding to the nanobody atoms or object.
     arrow_kwargs : dict
@@ -567,13 +577,6 @@ def load_nanobody_as_arrow(
         tmp_name = cmd.get_unused_name()
         cmd.set_name(model_name, tmp_name)
         model_name = tmp_name
-    if color is None:
-        indices = []
-        cmd.iterate(
-            f'({selection}) and %{model_name} and name CA', lambda x: indices.append(x.color)
-        )
-        index = indices[0]
-        color = cmd.get_color_tuple(index)
 
     load_nanobody_arrow(
         arrow_name,
