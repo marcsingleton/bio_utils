@@ -1,9 +1,10 @@
 """Functions for plotting."""
 
+from collections import defaultdict
 from math import inf, log2
 
 import matplotlib.pyplot as plt
-from matplotlib.collections import PatchCollection
+from matplotlib.collections import LineCollection, PatchCollection
 from matplotlib.patches import PathPatch, Rectangle
 from matplotlib.text import TextPath
 from matplotlib.ticker import MaxNLocator
@@ -335,5 +336,182 @@ def plot_profile(alignment, alphabet, ax=None, start=1, width=1, colormap=None, 
             patch = PathPatch(path, facecolor=colormap[sym], edgecolor='none')
             ax.add_patch(patch)
             y0 += y
+
+    return ax
+
+
+def plot_tree(
+    tree,
+    *,
+    ax=None,
+    linecolor=None,
+    linewidth=None,
+    tip_labels=True,
+    tip_fontname=None,
+    tip_fontsize=None,
+    tip_fontcolor=None,
+    tip_offset=0.005,
+    support_labels=False,
+    support_format_spec=None,
+    support_fontname=None,
+    support_fontsize=None,
+    support_fontcolor=None,
+    support_ha='center',
+    support_va='top',
+    support_hoffset=0,
+    support_voffset=0,
+    xmin_pad=0.01,
+    xmax_pad=0.1,
+    ymin_pad=0.025,
+    ymax_pad=0.025,
+):
+    """Plot tree.
+
+    Parameters
+    ----------
+    tree : TreeNode
+    ax : Axes
+        Axes used to draw tree. If None, a new Figure and Axes are created.
+    linecolor : color (matplotlib) or dict
+        If is dict, linecolor is a mapping of nodes to colors.
+    linewidth : float
+        Width of branches.
+    tip_labels : bool
+        Toggle drawing tip labels.
+    tip_fontname : str
+    tip_fontsize : float or {'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'}
+    tip_fontcolor : color (matplotlib)
+    tip_offset : float
+        The offset of the tip label from the end of the branch tip in axes
+        coordinates.
+    support_labels : bool
+        Toggle drawing support labels. Support labels are obtained from
+        support attribute. If the attribute is None, it is ignored. Use
+        assign_supports to extract the numerical values from the node labels.
+    support_format_spec : str
+        Format specification for supports using the format specification mini-
+        language.
+    support_fontname : str
+    support_fontsize : float
+    support_fontcolor : color (matplotlib)
+    support_ha : {'left', 'right', 'center'}
+        The horizontal alignment of the support label relative to the branch.
+    support_va : {'center', 'top', 'bottom', 'baseline', 'center_baseline'}
+        The vertical alignment of the support label relative to the branch.
+    support_voffset : float
+        The vertical offset of the support label relative to its alignment in
+        axes coordinates.
+    support_hoffset : float
+        The horizontal offset of the support label relative to its alignment in
+        axes coordinates.
+    xmin_pad, xmax_pad, ymin_pad, ymax_pad : float
+        Fraction of respective data ranges to pad on lower and upper bounds of
+        respective axes.
+
+    Returns
+    -------
+    ax : Axes
+    """
+    # Set options
+    if ax is None:
+        _, ax = plt.subplots()
+    if not isinstance(linecolor, dict):
+        if linecolor is None:
+            linecolor = 'black'
+        node2color = defaultdict(lambda x=linecolor: x)  # Use default parameter to ensure lambda captures value # fmt: skip
+    else:
+        node2color = linecolor
+    if linewidth is None:
+        linewidth = plt.rcParams['lines.linewidth']
+    if tip_fontname is None:
+        tip_fontname = plt.rcParams['font.family']
+    if tip_fontsize is None:
+        tip_fontsize = plt.rcParams['font.size']
+    if tip_fontcolor is None:
+        tip_fontcolor = 'black'
+    if support_fontname is None:
+        support_fontname = plt.rcParams['font.family']
+    if support_fontsize is None:
+        support_fontsize = plt.rcParams['font.size']
+    if support_fontcolor is None:
+        support_fontcolor = 'black'
+    if support_ha == 'left':
+        get_x = lambda node: xpos.get(node.parent, 0)  # In case root node
+    elif support_ha == 'center':
+        get_x = lambda node: (xpos.get(node.parent, 0) + xpos[node]) / 2
+    elif support_ha == 'right':
+        get_x = lambda node: xpos[node]
+    else:
+        raise ValueError(
+            f"'{support_ha}' is not a valid value for support_ha; "
+            f"supported values are 'left', 'right', 'center'"
+        )
+
+    # Make mapping of each node to its horizontal positions
+    xpos = {}
+    for node in tree.traverse(order='pre'):  # Return nodes on the way in
+        length = node.length if node.length is not None else 0
+        depth = xpos[node.parent] if node.parent else 0  # Checks for root node
+        xpos[node] = depth + length
+
+    # Make mapping of each node to its vertical position
+    tips = list(tree.tips())
+    ymax = len(tips) - 1
+    ypos = {tip: ymax - i for i, tip in enumerate(reversed(tips))}
+    for node in tree.traverse(order='post'):  # Return nodes on the way out
+        if node.children:
+            ypos[node] = (ypos[node.children[0]] + ypos[node.children[-1]]) / 2
+
+    # Adjust axes and add labels
+    xmin, xmax = min(xpos.values()), max(xpos.values())
+    xrange = xmax - xmin
+    ax.set_xlim(xmin - xmin_pad * xrange, xmax + xmax_pad * xrange)
+
+    ymin, ymax = min(ypos.values()), max(ypos.values())
+    yrange = ymax - ymin
+    ax.set_ylim(ymax + ymax_pad * yrange, ymin - ymin_pad * yrange)  # Invert the y-axis (origin at the top) # fmt: skip
+
+    # Plot lines and text
+    lines = []
+    T = ax.transLimits.inverted()  # Axes to data coordinates
+    for node in tree.traverse(order='post'):  # So parent lines are drawn over children lines
+        linecolor = node2color[node]
+        if node.parent:  # Horizontal line of node
+            x0, x1 = xpos[node.parent], xpos[node]
+            y = ypos[node]
+            lines.append(([(x0, y), (x1, y)], linewidth, linecolor))
+        if node.children:  # Vertical line of node
+            x = xpos[node]
+            y0, y1 = ypos[node.children[-1]], ypos[node.children[0]]
+            lines.append(([(x, y0), (x, y1)], linewidth, linecolor))
+        if tip_labels and node.is_tip():  # Write tip names
+            dx, _ = T.transform((tip_offset, 0)) - T.transform((0, 0))
+            ax.text(
+                xpos[node] + dx,
+                ypos[node],
+                node.name,
+                verticalalignment='center',
+                fontname=tip_fontname,
+                fontsize=tip_fontsize,
+                color=tip_fontcolor,
+            )
+        if (support_labels and node.support is not None and not node.is_tip()):  # Write support values if not None and not tip # fmt: skip
+            if support_format_spec is None:
+                support_string = str(node.support)
+            else:
+                support_string = f'{node.support:{support_format_spec}}'
+            dx, dy = T.transform((support_hoffset, support_voffset)) - T.transform((0, 0))
+            ax.text(
+                get_x(node) + dx,
+                ypos[node] + dy,
+                support_string,
+                fontname=support_fontname,
+                fontsize=support_fontsize,
+                color=support_fontcolor,
+                horizontalalignment=support_ha,
+                verticalalignment=support_va,
+            )
+    lc_args = {key: value for key, value in zip(['segments', 'linewidth', 'color'], zip(*lines))}
+    ax.add_collection(LineCollection(**lc_args, capstyle='projecting'))
 
     return ax
