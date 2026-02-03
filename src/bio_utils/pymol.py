@@ -183,7 +183,7 @@ def color_from_table(
     for atom_id, value in zip(data[id_field], values):
         color = cmap(value)
         color_string = '0x' + mpl_colors.to_hex(color)[1:]  # Trim preceding #
-        cmd.color(color_string, f'id {atom_id} and ({selection})')
+        cmd.color(color_string, f'({selection}) and id {atom_id}')
 
 
 cmd.extend(color_from_table)
@@ -431,7 +431,7 @@ def load_nanobody_arrow(
     atoms = []
     cmd.iterate_state(
         state,
-        f'({selection}) and (name CA)',
+        f'({selection}) and name CA',
         lambda atom: atoms.append((atom.ss, (atom.x, atom.y, atom.z))),
     )
     if len(atoms) == 0:
