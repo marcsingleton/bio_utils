@@ -377,7 +377,9 @@ def load_cgo_arrow(
     arrow = tail + head
     # fmt: on
 
+    view = cmd.get_view()
     cmd.load_cgo(arrow, name)
+    cmd.set_view(view)
 
 
 cmd.extend(load_cgo_arrow)
