@@ -32,6 +32,8 @@ gap_syms = frozenset(['-', '.'])
 protein_ambiguous_sym = 'X'
 protein_expanded_syms = frozenset(
     [
+        'B',  # aspartate/asparagine
+        'Z',  # glutamate/glutamine
         'J',  # leucine or isoleucine
         'O',  # pyrrolysine
         'U',  # selenocysteine
