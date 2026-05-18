@@ -83,7 +83,9 @@ def color_plddt(selection='*'):
     b_lower = 0
     for name, rgb, b_upper in _plldt_records:
         color = '0x' + bu_color.to_hex(rgb).removeprefix('#')
-        cmd.color(color, f'({selection}) and (b > {b_lower}) and (b < {b_upper})')
+        cmd.color(
+            color, f'({selection}) and (b > {b_lower}) and ((b < {b_upper}) or (b = {b_upper}))'
+        )
         b_lower = b_upper
 
 
