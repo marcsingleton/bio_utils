@@ -1,5 +1,6 @@
 """Functions for PyMOL visualizations."""
 
+import fnmatch
 import glob
 from itertools import groupby
 
@@ -591,3 +592,25 @@ def load_nanobody_as_arrow(
 
 
 cmd.extend(load_nanobody_as_arrow)
+
+
+def apply(fn, pattern='*', selection='*'):
+    """Apply a function to a selection in a list of objects.
+
+    Parameters
+    ----------
+    fn : function
+        Function to apply. Accepts the object name and selection as the first and second parameters,
+        respectively.
+    pattern : str
+        Name-pattern corresponding to objects.
+    selection : str
+        Selection-expression to be applied to each object.
+    """
+    for name in cmd.get_object_list():
+        if not fnmatch.fnmatch(name, pattern):
+            continue
+        fn(name, selection)
+
+
+cmd.extend(apply)
