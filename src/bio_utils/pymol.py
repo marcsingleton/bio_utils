@@ -135,6 +135,7 @@ def color_from_table(
     id_field='id',
     cmap='Reds',
     normalize=True,
+    read_table_kwargs=None,
 ):
     """
     Color atoms by values in a dataframe or CSV file.
@@ -156,6 +157,8 @@ def color_from_table(
         Matplotlib Colormap or name of registered cmap.
     normalize : bool
         If True, scale the values with min-max transformation.
+    read_table_kwargs : dict
+        Additional arguments unpacked in read_table call to load data from path.
     """
     if data is not None and data_path is not None:
         raise RuntimeError('Arguments data and data_path cannot both be provided.')
@@ -168,7 +171,18 @@ def color_from_table(
             sep = '\t'
         elif data_path.endswith('.csv'):
             sep = ','
-        data = pd.read_table(data_path, sep=sep, usecols=[id_field, value_field])
+
+        if read_table_kwargs is None:
+            read_table_kwargs = {}
+        elif not isinstance(read_table_kwargs, dict):
+            raise RuntimeError('Argument read_table_kwargs is not a dict.')
+
+        data = pd.read_table(
+            data_path,
+            sep=sep,
+            usecols=[id_field, value_field],
+            **read_table_kwargs,
+        )
     else:
         raise RuntimeError('Neither argument data or data_path was provided.')
 
