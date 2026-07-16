@@ -390,8 +390,8 @@ cmd.extend(load_cgo_arrow)
 
 def load_vhh_arrow(
     name,
-    color=None,
     selection='*',
+    color=None,
     state=-1,
     min_strand_len=5,
     N_term_len=2,
@@ -405,11 +405,11 @@ def load_vhh_arrow(
     ----------
     name : str
         Name of arrow object.
+    selection : str
+        Selection-expression or name-pattern corresponding to the VHH atoms or object.
     color : None or str or list of three floats
         If None, infer from first carbon atom in selection. Otherwise, a registered color name or
         RGB values in range [0.0, 1.0] or [0, 255].
-    selection : str
-        Selection-expression or name-pattern corresponding to the VHH atoms or object.
     state : int
         State containing secondary structure annotations.
     min_strand_len : int
@@ -537,8 +537,8 @@ cmd.extend(load_vhh_arrow)
 def load_as_vhh_arrow(
     path,
     name=None,
-    color=None,
     selection='*',
+    color=None,
     arrow_kwargs=None,
     vhh_kwargs=None,
 ):
@@ -551,11 +551,11 @@ def load_as_vhh_arrow(
         Path to structure.
     name : str
         Name of arrow object.
+    selection : str
+        Selection-expression or name-pattern corresponding to the VHH atoms or object.
     color : None or str or list of three floats
         If None, infer from first carbon atom in selection. Otherwise, a registered color name or
         RGB values in range [0.0, 1.0] or [0, 255].
-    selection : str
-        Selection-expression or name-pattern corresponding to the VHH atoms or object.
     arrow_kwargs : dict
         Additional arguments passed to load_vhh_arrow call.
     vhh_kwargs : dict
