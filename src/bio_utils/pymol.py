@@ -534,7 +534,7 @@ def load_vhh_arrow(
 cmd.extend(load_vhh_arrow)
 
 
-def load_vhh_as_arrow(
+def load_as_vhh_arrow(
     path,
     name=None,
     color=None,
@@ -591,7 +591,7 @@ def load_vhh_as_arrow(
     cmd.delete(f'%{model_name}')
 
 
-cmd.extend(load_vhh_as_arrow)
+cmd.extend(load_as_vhh_arrow)
 
 
 def apply(fn, pattern='*', selection='*'):
