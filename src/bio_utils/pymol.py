@@ -446,6 +446,8 @@ def load_vhh_arrow(
         raise ValueError(f'Mode {mode} not recognized. Must be in {accepted_modes}.')
     if arrow_kwargs is None:
         arrow_kwargs = {}
+    if 'mode' not in arrow_kwargs:
+        arrow_kwargs['mode'] = 'center'
 
     # Set color
     if color is None:
