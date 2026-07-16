@@ -8,6 +8,7 @@ import matplotlib.colors as mpl_colors
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import pymol
 import pymol.cmd as cmd
 import pymol.cgo as cgo
 
@@ -206,63 +207,33 @@ def color_from_table(
 cmd.extend(color_from_table)
 
 
-def set_style(style_name):
+def set_style(style_name, styles=None):
     """
     Apply a pre-defined style.
 
     Parameters
     ----------
     style_name : str
-        Name of a pre-defined style. See source for details.
+        Name of a pre-defined style.
+    styles : dict
+        Nested dict where outer keys are style names and inner dicts are setting-value pairs. If is
+        None, attempts to use a STYLES variable defined in the PyMol CLI.
     """
-    if style_name == 'default':
-        cmd.reinitialize('settings')
-    elif style_name == 'cartoon':
-        cmd.reinitialize('settings')
-        cmd.bg_color('white')
-        cmd.set('ray_trace_mode', 1)  # 1 renders with outlines
-        cmd.set('ray_shadows', 'off')  # Turns off ray trace shadows
-        cmd.set('ray_trace_disco_factor', 1)  # No lines on surfaces
-        cmd.set('antialias', 2)
-        cmd.set('ambient', 0.5)  # Ambient light
-        cmd.set('direct', 0.2)  # Camera light
-        cmd.set('spec_direct', 0)  # Turn off camera specular reflections
-        cmd.set('light_count', 1)  # Use only ambient and camera light
-        cmd.set('cartoon_discrete_colors', 'on')  # Turn off color blending at boundaries
-    elif style_name == 'spheres':
-        cmd.reinitialize('settings')
-        cmd.bg_color('white')
-        cmd.set('antialias', 2)
-        cmd.set('ambient', 0.2)  # Ambient light
-        cmd.set('spec_direct', 0)  # Turn off camera specular reflections
-        cmd.set('light_count', 1)  # Use only ambient and camera light
-    elif style_name == 'surface':
-        cmd.reinitialize('settings')
-        cmd.bg_color('white')
-        cmd.set('ray_trace_mode', 1)  # 1 renders with outlines
-        cmd.set('ray_shadows', 'off')  # Turns off ray trace shadows
-        cmd.set('ray_trace_disco_factor', 1)  # No lines on surfaces
-        cmd.set('antialias', 2)
-        cmd.set('ambient', 0.65)  # Ambient light
-        cmd.set('direct', 0)  # Camera light
-        cmd.set('spec_direct', 0)  # Turn off camera specular reflections
-        cmd.set('light_count', 1)  # Use only ambient and camera light
-        cmd.set('surface_quality', 1)
-    elif style_name == 'high_contrast':
-        cmd.bg_color('white')
-        cmd.set('ray_trace_mode', 1)  # 1 renders with outlines
-        cmd.set('ray_shadows', 'off')  # Turns off ray trace shadows
-        cmd.set('ray_trace_disco_factor', 1)  # No lines on surfaces
-        cmd.set('antialias', 2)
-        cmd.set('ambient', 1)  # Ambient light
-        cmd.set('direct', 0)  # Camera light
-        cmd.set('spec_direct', 0)  # Turn off camera specular reflections
-        cmd.set('light_count', 1)  # Use only ambient and camera light
-        cmd.set('cartoon_discrete_colors', 'on')  # Turn off color blending at boundaries
-        cmd.set('surface_quality', 1)
-        cmd.set('depth_cue', 'off')
-    else:
+    if styles is None:
+        if 'STYLES' in pymol.__dict__:
+            styles = pymol.__dict__['STYLES']
+        else:
+            raise RuntimeError('Argument style not provided and STYLES not defined in PyMol CLI.')
+    elif not isinstance(styles, dict):
+        raise RuntimeError('Argument styles is not a dict.')
+
+    try:
+        style = styles[style_name]
+    except KeyError:
         raise RuntimeError(f'Style {style_name} not recognized')
+
+    for setting, value in style.items():
+        cmd.set(setting, value)
 
 
 cmd.extend(set_style)
