@@ -388,7 +388,7 @@ def load_cgo_arrow(
 cmd.extend(load_cgo_arrow)
 
 
-def load_nanobody_arrow(
+def load_vhh_arrow(
     name,
     color=None,
     selection='*',
@@ -409,7 +409,7 @@ def load_nanobody_arrow(
         If None, infer from first carbon atom in selection. Otherwise, a registered color name or
         RGB values in range [0.0, 1.0] or [0, 255].
     selection : str
-        Selection-expression or name-pattern corresponding to the nanobody atoms or object.
+        Selection-expression or name-pattern corresponding to the VHH atoms or object.
     state : int
         State containing secondary structure annotations.
     min_strand_len : int
@@ -531,19 +531,19 @@ def load_nanobody_arrow(
     load_cgo_arrow(origin, orient, name, color, **arrow_kwargs)
 
 
-cmd.extend(load_nanobody_arrow)
+cmd.extend(load_vhh_arrow)
 
 
-def load_nanobody_as_arrow(
+def load_vhh_as_arrow(
     path,
     name=None,
     color=None,
     selection='*',
     arrow_kwargs=None,
-    nanobody_kwargs=None,
+    vhh_kwargs=None,
 ):
     """
-    Load a nanobody structure as an arrow.
+    Load a VHH structure as an arrow.
 
     Parameters
     ----------
@@ -555,18 +555,18 @@ def load_nanobody_as_arrow(
         If None, infer from first carbon atom in selection. Otherwise, a registered color name or
         RGB values in range [0.0, 1.0] or [0, 255].
     selection : str
-        Selection-expression or name-pattern corresponding to the nanobody atoms or object.
+        Selection-expression or name-pattern corresponding to the VHH atoms or object.
     arrow_kwargs : dict
-        Additional arguments passed to load_nanobody_arrow call.
-    nanobody_kwargs : dict
-        Additional arguments unpacked in load_nanobody_arrow call.
+        Additional arguments passed to load_vhh_arrow call.
+    vhh_kwargs : dict
+        Additional arguments unpacked in load_vhh_arrow call.
     """
     # Some bookkeeping for internal clarity
     arrow_name = name
     del name
 
-    if nanobody_kwargs is None:
-        nanobody_kwargs = {}
+    if vhh_kwargs is None:
+        vhh_kwargs = {}
     if arrow_kwargs is None:
         arrow_kwargs = {}
 
@@ -581,17 +581,17 @@ def load_nanobody_as_arrow(
         cmd.set_name(model_name, tmp_name)
         model_name = tmp_name
 
-    load_nanobody_arrow(
+    load_vhh_arrow(
         arrow_name,
         color,
         f'({selection}) and %{model_name}',
         arrow_kwargs=arrow_kwargs,
-        **nanobody_kwargs,
+        **vhh_kwargs,
     )
     cmd.delete(f'%{model_name}')
 
 
-cmd.extend(load_nanobody_as_arrow)
+cmd.extend(load_vhh_as_arrow)
 
 
 def apply(fn, pattern='*', selection='*'):
