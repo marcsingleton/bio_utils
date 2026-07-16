@@ -325,6 +325,7 @@ def load_cgo_arrow(
     tail_width=0.5,
     head_length=1.5,
     head_width=1.5,
+    mode='tail',
 ):
     """
     Load 3D arrow as object.
@@ -332,7 +333,7 @@ def load_cgo_arrow(
     Parameters
     ----------
     origin : list of three floats
-        Vector of position of arrow tail.
+        Vector of position of arrow.
     orient : list of three floats
         Vector of direction of arrow head. Does not need to be a unit vector.
     name : str
@@ -347,6 +348,9 @@ def load_cgo_arrow(
         Length of head in A.
     head_width : float
         Width of head in A.
+    mode : tail | tail-center | center
+        Sets alignment of arrow with origin. If tail, arrow tail starts at origin. tail-center and
+        center align those points with the origin.
     """
     if isinstance(color, str):
         index = cmd.get_color_index(color)
@@ -357,6 +361,18 @@ def load_cgo_arrow(
         r, g, b = color
     origin = np.asarray(origin)
     orient = np.asarray(orient) / np.linalg.vector_norm(orient)
+
+    accepted_modes = ['tail', 'tail-center', 'center']
+    if mode == 'tail':
+        pass
+    elif mode == 'tail-center':
+        length = tail_length
+        origin -= length / 2 * orient
+    elif mode == 'center':
+        length = tail_length + head_length
+        origin -= length / 2 * orient
+    else:
+        raise ValueError(f'Mode {mode} not recognized. Must be in {accepted_modes}.')
 
     # fmt: off
     t0, t1 = origin, origin + tail_length * orient
