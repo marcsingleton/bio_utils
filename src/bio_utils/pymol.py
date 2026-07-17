@@ -217,13 +217,13 @@ def set_style(style_name, styles=None):
         Name of a pre-defined style.
     styles : dict
         Nested dict where outer keys are style names and inner dicts are setting-value pairs. If is
-        None, attempts to use a STYLES variable defined in the PyMol CLI.
+        None, attempts to use a STYLES variable defined in the PyMOL CLI.
     """
     if styles is None:
         if 'STYLES' in pymol.__dict__:
             styles = pymol.__dict__['STYLES']
         else:
-            raise RuntimeError('Argument style not provided and STYLES not defined in PyMol CLI.')
+            raise RuntimeError('Argument style not provided and STYLES not defined in PyMOL CLI.')
     elif not isinstance(styles, dict):
         raise RuntimeError('Argument styles is not a dict.')
 
@@ -311,6 +311,7 @@ def load_cgo_arrow(
     head_length=1.5,
     head_width=1.5,
     mode='tail',
+    pseudoatom=False,
 ):
     """
     Load 3D arrow as object.
@@ -336,6 +337,11 @@ def load_cgo_arrow(
     mode : tail | tail-center | center
         Sets alignment of arrow with origin. If tail, arrow tail starts at origin. tail-center and
         center align those points with the origin.
+    pseudoatom : bool
+        If True, add pseudoatom at arrow tip as new object with provided name and '_pk' suffix.
+
+    PyMOL seemingly cannot accommodate CGO objects and pseudoatoms under a single name, so they must
+    be separate objects.
     """
     if isinstance(color, str):
         index = cmd.get_color_index(color)
@@ -383,6 +389,9 @@ def load_cgo_arrow(
 
     view = cmd.get_view()
     cmd.load_cgo(arrow, name)
+    if pseudoatom:
+        pos = origin + (tail_length + head_length) * orient
+        cmd.pseudoatom(name + '_pk', pos=tuple(pos))  # Conversion needed for correct serialization
     cmd.set_view(view)
 
 
