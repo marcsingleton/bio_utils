@@ -5,7 +5,7 @@ from string import hexdigits
 # COLOR SCHEMES
 color_schemes = {}
 
-tableau_10 = [
+tableau10 = [
     '#4E79A7',  # blue
     '#F28E2B',  # orange
     '#E15759',  # red
@@ -17,9 +17,9 @@ tableau_10 = [
     '#9C755F',  # brown
     '#BAB0AC',  # grey
 ]
-color_schemes['tableau_10'] = tableau_10
+color_schemes['tableau10'] = tableau10
 
-tableau_20 = [
+tableau20 = [
     '#4E79A7',  # blue
     '#F28E2B',  # orange
     '#E15759',  # red
@@ -41,7 +41,7 @@ tableau_20 = [
     '#D7B5A6',  # light_brown
     '#BAB0AC',  # grey
 ]
-color_schemes['tableau_20'] = tableau_20
+color_schemes['tableau20'] = tableau20
 
 tableau_blacks = [
     '#000000',
@@ -98,12 +98,12 @@ tableau_blues = [
 ]
 color_schemes['tableau_blues'] = tableau_blues
 
-tableau_blue_greys = [
+tableau_bluegreys = [
     '#606B76',
     '#818B91',
     '#A7ACAD',
 ]
-color_schemes['tableau_blue_greys'] = tableau_blue_greys
+color_schemes['tableau_bluegreys'] = tableau_bluegreys
 
 tableau_purples = [
     '#B07AA1',
