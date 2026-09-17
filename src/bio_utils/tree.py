@@ -13,13 +13,13 @@ class TreeNode:
 
     Parameters
     ----------
-    name: str
+    name : str
         Name of node.
-    children: list of TreeNodes
+    children : list of TreeNodes
         Children of node.
-    parent: TreeNode
+    parent : TreeNode
         Parent of node.
-    length: Length of node.
+    length : Length of node.
     """
 
     def __init__(self, name=None, children=None, parent=None, length=None):
