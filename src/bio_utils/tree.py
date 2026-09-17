@@ -2,9 +2,9 @@
 
 from string import whitespace
 
-escaped_tokens = set('\\')
-structure_tokens = set('(),:;')
-whitespace_tokens = set(whitespace)
+_ESCAPED_TOKENS = set('\\')
+_STRUCTURE_TOKENS = set('(),:;')
+_WHITESPACE_TOKENS = set(whitespace)
 
 
 class TreeNode:
@@ -127,9 +127,7 @@ class TreeNode:
                 copies.append(copy)
             else:
                 cls = type(node)
-                children_copies = [copies.pop() for _ in node.children][
-                    ::-1
-                ]  # Reverse b/c post order reverses children
+                children_copies = [copies.pop() for _ in node.children][::-1]  # Reverse b/c post order reverses children # fmt: skip
                 copy = cls(name=node.name, children=children_copies, length=node.length)
                 copies.append(copy)
         copy = copies.pop()
@@ -213,16 +211,16 @@ def _tokenize_newick(nw_string):
     i = 0
     while i < len(nw_string):
         sym = nw_string[i]
-        if not is_escaped and sym in escaped_tokens:
+        if not is_escaped and sym in _ESCAPED_TOKENS:
             is_escaped = True
             i += 1
-        elif not is_escaped and sym in structure_tokens:
+        elif not is_escaped and sym in _STRUCTURE_TOKENS:
             if buffer:
                 tokens.append(''.join(buffer))
                 buffer = []
             tokens.append(sym)
             i += 1
-        elif not is_escaped and sym in whitespace_tokens:
+        elif not is_escaped and sym in _WHITESPACE_TOKENS:
             if buffer:
                 tokens.append(''.join(buffer))
                 buffer = []
