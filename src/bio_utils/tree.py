@@ -80,16 +80,16 @@ class TreeNode:
     def _postorder(self, include_self=True):
         stack = []
         if include_self:
-            stack.append(self)
+            stack.append((self, False))
         else:
-            stack.extend(self.children)
+            stack.extend([(child, False) for child in self.children])
         while stack:
-            current_node = stack.pop()
-            if stack and current_node is stack[-1]:
-                yield stack.pop()
+            current_node, is_post = stack.pop()
+            if is_post:
+                yield current_node
             else:
-                stack.extend([current_node, current_node])
-                stack.extend(current_node.children[::-1])
+                stack.append((current_node, True))
+                stack.extend((child, False) for child in current_node.children[::-1])
 
     def _preorder(self, include_self=True):
         stack = []
