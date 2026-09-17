@@ -51,11 +51,18 @@ class TreeNode:
         include_self : bool
             If True, include calling node in iterator.
         order : str
-            Type of traversal. 'pre', 'post', or 'level' options are supported.
+            Type of traversal. 'pre', 'post', 'level', or 'in' options are supported.
 
         Returns
         -------
         iterator over TreeNodes
+
+        Notes
+        -----
+        In-order traversal is only unambiguously defined for strictly binary trees. For general
+        trees, this library takes the convention that a node is visited before its last child. Thus,
+        nodes with a single child may yield a different traversal order than implementations for
+        binary trees with explicit left and right children.
         """
         if order == 'pre':
             return self._preorder(include_self=include_self)
@@ -63,8 +70,26 @@ class TreeNode:
             return self._postorder(include_self=include_self)
         elif order == 'level':
             return self._levelorder(include_self=include_self)
+        elif order == 'in':
+            return self._inorder(include_self=include_self)
         else:
-            raise ValueError('order is not one of pre, post, or level')
+            raise ValueError('order is not one of pre, post, level, or in')
+
+    def _inorder(self, include_self=True):
+        stack = []
+        if include_self:
+            stack.append((self, False))
+        else:
+            stack.extend([(child, False) for child in self.children])
+        while stack:
+            current_node, is_return = stack.pop()
+            if is_return:
+                yield current_node
+            else:
+                head, tail = current_node.children[:-1], current_node.children[-1:]
+                stack.extend([(child, False) for child in tail])
+                stack.append((current_node, True))
+                stack.extend([(child, False) for child in head[::-1]])
 
     def _levelorder(self, include_self=True):
         stack = []
@@ -84,8 +109,8 @@ class TreeNode:
         else:
             stack.extend([(child, False) for child in self.children])
         while stack:
-            current_node, is_post = stack.pop()
-            if is_post:
+            current_node, is_return = stack.pop()
+            if is_return:
                 yield current_node
             else:
                 stack.append((current_node, True))
